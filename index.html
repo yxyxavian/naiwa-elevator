@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#f5b900">
+<title>奶娃电梯 · 不停班！</title>
+<style>
+:root{--yellow:#ffd21a;--gold:#f2ad00;--deep:#8a5b00;--cream:#fff7cf;--brown:#4a3100;--ink:#2f2308;--orange:#ff8a00;--green:#55a82f;--red:#e34b35;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif;background:#201600;color:var(--ink);display:flex;justify-content:center}button{font:inherit}
+#app{width:min(100vw,560px);height:100dvh;min-height:650px;position:relative;overflow:hidden;background:radial-gradient(circle at 50% -5%,#fff4a4 0,#ffd83c 28%,#eab100 62%,#a96900 100%)}
+#app:before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 12% 15%,#fff8bd 0 2px,transparent 3px),radial-gradient(circle at 83% 20%,#fff8bd 0 1px,transparent 2px),radial-gradient(circle at 24% 46%,#fff8bd 0 2px,transparent 3px),radial-gradient(circle at 76% 58%,#fff8bd 0 2px,transparent 3px),radial-gradient(circle at 45% 76%,#fff8bd 0 1px,transparent 2px);opacity:.45;pointer-events:none}
+header{position:absolute;z-index:20;left:0;right:0;top:0;height:82px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(#8b5b00aa,transparent);color:#fff9d6}.brand{display:flex;align-items:center;gap:9px}.brandMark{width:43px;height:43px;border-radius:15px;background:#fff2a6;border:2px solid #fff8d5;box-shadow:0 5px 0 #8a5b00;display:grid;place-items:center;font-size:26px}.logo{font-size:21px;font-weight:1000;letter-spacing:.5px;text-shadow:0 2px 4px #754b00}.sub{font-size:10px;color:#fff5bb;margin-top:2px}.hud{display:flex;gap:11px}.hudItem{text-align:right;font-size:9px;color:#fff4ae;letter-spacing:1px}.hudItem b{display:block;color:#fff;font-size:17px;letter-spacing:0}
+#elevator{position:absolute;z-index:3;left:12px;right:12px;top:88px;bottom:226px;border-radius:31px;border:3px solid #fff0a0;background:linear-gradient(180deg,#ffe76b,#f8bd14 66%,#d68c00);box-shadow:0 22px 70px #5a380099,inset 0 0 55px #fff7a855;overflow:hidden}
+#elevator:after{content:"NaiWa • 01";position:absolute;left:14px;top:12px;font-size:8px;font-weight:900;letter-spacing:2px;color:#8c5d00;opacity:.6}
+#floorBox{position:absolute;z-index:10;top:11px;left:50%;transform:translateX(-50%);min-width:104px;text-align:center;padding:7px 18px;border-radius:17px;background:#fff7cf;border:3px solid #d38a00;box-shadow:0 6px 0 #9a6100;color:#684300}.floor{font-size:25px;font-weight:1000;line-height:1}.direction{font-size:10px;color:#b46d00;margin-top:2px;font-weight:900}
+#timer{position:absolute;z-index:11;left:17px;top:72px;width:125px;height:9px;border-radius:99px;background:#a76a00;border:2px solid #fff0a0;overflow:hidden}.timerBar{height:100%;width:100%;background:linear-gradient(90deg,#fff37d,#ff7a00);transform-origin:left}
+
+.soundToggle{position:absolute;z-index:30;right:15px;top:116px;width:42px;height:42px;border-radius:14px;border:2px solid #fff2a5;background:#fff2a6cc;color:#6a4300;box-shadow:0 5px 0 #9a6100;font-size:20px;cursor:pointer}.soundToggle:active{transform:translateY(3px);box-shadow:0 2px 0 #9a6100}.soundToggle.off{opacity:.65}
+#comboBox{position:absolute;z-index:11;right:17px;top:64px;text-align:right;color:#fff8cf;text-shadow:0 2px 3px #7b4d00}.comboLabel{font-size:9px;letter-spacing:1px}.combo{font-size:29px;font-weight:1000;color:#fff}
+#window{position:absolute;z-index:1;left:13%;right:13%;top:88px;height:135px;border-radius:24px;background:linear-gradient(#ffeaa0,#ffd24a);border:2px solid #c77c00;box-shadow:inset 0 0 35px #8c590033;overflow:hidden}.city{position:absolute;bottom:0;left:0;right:0;height:65px;background:repeating-linear-gradient(90deg,#d99700 0 32px,#f2b800 32px 54px);clip-path:polygon(0 35%,8% 35%,8% 5%,17% 5%,17% 52%,26% 52%,26% 15%,36% 15%,36% 43%,47% 43%,47% 0,57% 0,57% 50%,68% 50%,68% 22%,78% 22%,78% 45%,90% 45%,90% 10%,100% 10%,100% 100%,0 100%);opacity:.65}
+#doors{position:absolute;z-index:2;inset:0;padding:53px 12px 16px;display:flex;gap:4px}.door{flex:1;border:3px solid #c57b00;border-radius:7px;background:linear-gradient(90deg,#fff1a2,#ffc928 45%,#e7a600 100%);box-shadow:inset 0 0 40px #80500033;transition:transform .38s cubic-bezier(.2,.8,.2,1)}#elevator.open #doors .door:first-child{transform:translateX(-55%)}#elevator.open #doors .door:last-child{transform:translateX(55%)}
+#character{position:absolute;z-index:6;left:50%;bottom:46px;transform:translateX(-50%);width:min(83%,340px);height:68%;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}.naiwa{width:100%;height:100%;filter:drop-shadow(0 15px 10px #6c430055);transition:transform .12s}.naiwa svg{width:100%;height:100%;overflow:visible}.bounce .naiwa{animation:bounce .35s}.wobble .naiwa{animation:wobble .3s}.win .naiwa{animation:win .6s}.sleep .naiwa{animation:sway 1.3s infinite alternate}.panic .naiwa{animation:panic .18s infinite alternate}.spin .naiwa{animation:spin .55s}.hop .naiwa{animation:hop .5s}.peek .naiwa{animation:peek .4s}.angry .naiwa{animation:angry .3s}.work .naiwa{animation:work .5s}.tired .naiwa{animation:tired .8s infinite alternate}
+@keyframes bounce{50%{transform:translateY(-20px) scale(1.05)}}@keyframes wobble{25%{transform:translateX(-11px) rotate(-4deg)}75%{transform:translateX(11px) rotate(4deg)}}@keyframes win{50%{transform:translateY(-28px) rotate(5deg) scale(1.08)}}@keyframes sway{to{transform:translateX(5px) rotate(2deg)}}@keyframes panic{to{transform:translateX(5px) rotate(-3deg)}}@keyframes spin{to{transform:rotate(8deg) scale(1.04)}}@keyframes hop{50%{transform:translateY(-34px)}}@keyframes peek{50%{transform:translateX(14px)}}@keyframes angry{50%{transform:scale(1.07) translateY(-5px)}}@keyframes work{50%{transform:rotate(-5deg) translateY(-5px)}}@keyframes tired{to{transform:translateY(8px)}}
+#mission{position:absolute;z-index:9;left:15px;right:15px;bottom:47px;text-align:center;pointer-events:none;text-shadow:0 2px 6px #6d4300}.eventIcon{font-size:32px;line-height:1}.eventText{font-size:18px;font-weight:1000;color:#fffbe2}.eventHint{font-size:11px;color:#fff4ae;margin-top:3px}.feedback{margin-top:5px;font-size:27px;font-weight:1000;opacity:0;transform:scale(.75);transition:.12s;text-shadow:0 0 22px currentColor}.feedback.show{opacity:1;transform:scale(1)}.good{color:#fff}.bad{color:#ffeb8a}
+#floorLine{position:absolute;z-index:5;left:8%;right:8%;bottom:38px;height:3px;background:#fff3a3;box-shadow:0 0 15px #fff7b8}
+#controls{position:absolute;z-index:15;left:12px;right:12px;bottom:71px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.ctrl{min-height:77px;border-radius:20px;border:3px solid #fff0a0;color:#6a4300;background:linear-gradient(180deg,#fff3a1,#ffc82a);box-shadow:0 7px 0 #9a6100,0 14px 26px #6b410066;touch-action:manipulation;font-size:29px;font-weight:1000;cursor:pointer}.ctrl small{display:block;color:#8b5a00;font-size:10px;margin-top:2px}.ctrl:active,.ctrl.active{transform:translateY(6px);box-shadow:0 2px 0 #9a6100,0 6px 12px #6b410066}.ctrl.special{background:linear-gradient(180deg,#fff9c9,#ffd95a)}
+#tip{position:absolute;z-index:15;bottom:22px;left:0;right:0;text-align:center;color:#fff0aa;font-size:10px}
+.overlay{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:18px;background:#6d4700cc;backdrop-filter:blur(8px)}.card{width:100%;max-width:430px;padding:23px 19px 20px;border-radius:31px;background:linear-gradient(180deg,#fff4a7,#ffd449);border:4px solid #fff3ad;box-shadow:0 30px 100px #3b2500aa,0 8px 0 #8d5900;text-align:center;color:#573800}.coverNaiwa{height:190px;margin:-4px auto 0}.card h1{font-size:38px;line-height:1;margin:0 0 9px;font-weight:1000;color:#6b4100;text-shadow:0 3px 0 #fff1a0}.card h2{font-size:31px;margin:5px 0 9px}.card p{color:#79510b;line-height:1.55;font-size:13px;margin:7px 0}.statsGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.stat{padding:9px;border-radius:16px;background:#fff6c9aa;border:2px solid #e0a800}.stat small{display:block;color:#9b6800}.stat b{font-size:22px;color:#6a4100}.primary{width:100%;border:3px solid #fff2a5;border-radius:18px;padding:14px 16px;margin-top:6px;color:#fff;background:linear-gradient(90deg,#ff9e00,#e8a500);font-size:18px;font-weight:1000;box-shadow:0 7px 0 #8f5900;cursor:pointer}.primary:active{transform:translateY(5px);box-shadow:0 2px 0 #8f5900}.note{font-size:10px;color:#9b6900;margin-top:12px}.hidden{display:none!important}.shake{animation:shake .24s}.flash{animation:flash .18s}@keyframes shake{25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-5px)}}@keyframes flash{50%{filter:brightness(1.4)}}
+.particle{position:absolute;z-index:25;font-size:22px;pointer-events:none;animation:particle .7s ease-out forwards}@keyframes particle{to{transform:translate(var(--x),var(--y)) rotate(90deg) scale(.3);opacity:0}}
+.badge{display:inline-block;padding:4px 9px;border-radius:99px;background:#fff0a0;border:1px solid #d89a00;color:#8a5900;font-size:10px;font-weight:900;margin-bottom:5px}
+@media(max-height:720px){#elevator{bottom:210px}.coverNaiwa{height:150px}.card{padding:17px}.card h1{font-size:32px}.ctrl{min-height:65px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div class="brand"><div class="brandMark">🍼</div><div><div class="logo">奶娃电梯 · 不停班！</div><div class="sub">奶娃专属电梯 · 黄色奶娃主题</div></div></div><div class="hud"><div class="hudItem">分数<b id="score">0</b></div><div class="hudItem">最高<b id="best">0</b></div></div></header>
+<main id="elevator">
+  <div id="floorBox"><div class="floor" id="floor">1F</div><div class="direction" id="direction">● 奶娃待机</div></div>
+  <div id="timer"><div class="timerBar" id="timerBar"></div></div><div id="comboBox"><div class="comboLabel">奶娃 COMBO</div><div class="combo" id="combo">0</div></div><button class="soundToggle" id="soundToggle" aria-label="切换音效">🔊</button>
+  <div id="window"><div class="city"></div></div><div id="doors"><div class="door"></div><div class="door"></div></div>
+  <div id="character"><div class="naiwa" id="naiwa"></div></div><div id="floorLine"></div>
+  <div id="mission"><div class="eventIcon" id="eventIcon">🍼</div><div class="eventText" id="eventText">奶娃准备上班…</div><div class="eventHint" id="eventHint">看到提示后，快速按下对应按钮</div><div class="feedback" id="feedback"></div></div>
+</main>
+<div id="controls"><button class="ctrl" data-a="left">←<small>开门</small></button><button class="ctrl" data-a="up">↑<small>上楼</small></button><button class="ctrl" data-a="down">↓<small>下楼</small></button><button class="ctrl" data-a="right">→<small>关门</small></button></div>
+<div id="tip">键盘：← ↑ ↓ → · 手机直接点击 · 奶娃越忙动作越丰富</div>
+<section id="start" class="overlay"><div class="card"><div class="badge">NAIWA ORIGINAL · 奶娃主题</div><div class="coverNaiwa" id="coverNaiwa"></div><h1>奶娃电梯</h1><p>奶娃今天正式接管电梯！<br>猫咪、快递、迟到客人、停电……全都来了。</p><div class="statsGrid"><div class="stat"><small>主题</small><b>全奶娃</b></div><div class="stat"><small>每局</small><b>45 秒</b></div></div><button class="primary" id="startBtn">🍼 开始奶娃值班</button><div class="note">纯 HTML + CSS + JavaScript · 单文件 · 不联网 · 点开即玩</div></div></section>
+<section id="over" class="overlay hidden"><div class="card"><div class="coverNaiwa" id="overNaiwa"></div><h2 id="overTitle">奶娃下班！</h2><p id="overMsg">奶娃今天辛苦啦。</p><div class="statsGrid"><div class="stat"><small>最终分数</small><b id="finalScore">0</b></div><div class="stat"><small>最高连击</small><b id="finalCombo">0</b></div></div><button class="primary" id="againBtn">🍼 再玩一局</button></div></section>
+</div>
+<script>
+// 奶娃 V3：所有角色画面均由本文件内的 SVG 生成，无需额外图片。
+const SVG=(pose='idle')=>{
+ const eye=(x,y,ang=0)=>`<g transform="translate(${x} ${y}) rotate(${ang})"><ellipse rx="15" ry="18" fill="#ffe76a" stroke="#8b5a00" stroke-width="3"/><circle cy="2" r="7" fill="#2b2308"/><circle cy="-1" r="2.5" fill="#fff"/></g>`;
+ const arm=(x,y,rot=0)=>`<g transform="translate(${x} ${y}) rotate(${rot})"><path d="M0 0 Q42 15 67 42" fill="none" stroke="#ffc400" stroke-width="30" stroke-linecap="round"/><path d="M0 0 Q42 15 67 42" fill="none" stroke="#e39a00" stroke-width="3" opacity=".7"/></g>`;
+ const blush=`<ellipse cx="112" cy="185" rx="20" ry="9" fill="#ff9b45" opacity=".5"/><ellipse cx="208" cy="185" rx="20" ry="9" fill="#ff9b45" opacity=".5"/>`;
+ let face='';let arms='';let prop='';let body='';
+ if(pose==='happy'){face=`<path d="M132 183 Q160 210 188 183" fill="none" stroke="#6c4300" stroke-width="5" stroke-linecap="round"/>`;arms=arm(93,220,-22)+arm(227,220,22)}
+ else if(pose==='wave'){face=`<path d="M136 185 Q160 198 184 185" fill="none" stroke="#6c4300" stroke-width="5" stroke-linecap="round"/>`;arms=arm(93,218,-70)+arm(225,218,75);prop=`<circle cx="293" cy="170" r="9" fill="#fff1a0"/><path d="M293 156v-18M293 184v18M280 170h-18M306 170h18" stroke="#fff" stroke-width="4" stroke-linecap="round"/>`}
+ else if(pose==='sleep'){face=`<path d="M130 181 q10 8 20 0M170 181 q10 8 20 0" fill="none" stroke="#6c4300" stroke-width="5"/><path d="M196 146 q20 -22 42 0" fill="none" stroke="#fff7cf" stroke-width="7"/>`;arms=arm(96,226,18)+arm(224,226,-18);prop=`<text x="235" y="122" font-size="28" font-weight="900" fill="#fff7cf">Z</text>`}
+ else if(pose==='panic'){face=`<circle cx="150" cy="184" r="7" fill="#6c4300"/><circle cx="170" cy="184" r="7" fill="#6c4300"/><ellipse cx="160" cy="207" rx="10" ry="16" fill="#6c4300"/>`;arms=arm(95,224,-75)+arm(225,224,75);prop=`<path d="M160 80l8 22 23 2-18 14 6 23-19-12-19 12 6-23-18-14 23-2z" fill="#fff"/>`}
+ else if(pose==='angry'){face=`<path d="M130 176l20 8M190 176l-20 8" stroke="#6c4300" stroke-width="6"/><path d="M142 205 Q160 193 178 205" fill="none" stroke="#6c4300" stroke-width="5"/>`;arms=arm(96,224,8)+arm(224,224,-8);prop=`<path d="M93 138l-18-18M227 138l18-18" stroke="#ff7a00" stroke-width="8" stroke-linecap="round"/>`}
+ else if(pose==='work'){face=`<path d="M135 184 Q160 194 185 184" fill="none" stroke="#6c4300" stroke-width="5"/>`;arms=arm(96,226,-38)+arm(224,226,38);prop=`<rect x="128" y="236" width="64" height="34" rx="8" fill="#fff3a0" stroke="#a66b00" stroke-width="4"/><path d="M145 253h30" stroke="#d99a00" stroke-width="5"/>`}
+ else if(pose==='peek'){face=`<path d="M138 183 Q160 194 182 183" fill="none" stroke="#6c4300" stroke-width="5"/>`;arms=arm(98,225,70)+arm(222,225,-70);prop=`<path d="M252 110h40v75h-40z" fill="#fff7cf" stroke="#a66b00" stroke-width="4"/><circle cx="272" cy="145" r="7" fill="#ff8a00"/>`}
+ else if(pose==='tired'){face=`<path d="M132 183l18 4M170 187l18-4" stroke="#6c4300" stroke-width="5"/><path d="M145 207 Q160 213 175 207" fill="none" stroke="#6c4300" stroke-width="5"/>`;arms=arm(96,228,12)+arm(224,228,-12)}
+ else {face=`<path d="M138 184 Q160 194 182 184" fill="none" stroke="#6c4300" stroke-width="5"/>`;arms=arm(96,225,-6)+arm(224,225,6)}
+ body=`<path d="M70 300 Q62 226 95 155 Q112 116 160 116 Q208 116 225 155 Q258 226 250 300Z" fill="#ffd21a" stroke="#a66b00" stroke-width="5"/><ellipse cx="160" cy="272" rx="76" ry="55" fill="#ffe99a" stroke="#c78600" stroke-width="3"/>`;
+ return `<svg viewBox="0 0 320 360" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffe35a"/><stop offset="1" stop-color="#ffb900"/></linearGradient></defs><ellipse cx="160" cy="329" rx="88" ry="15" fill="#8c560044"/>${body}<path d="M86 143 Q80 55 160 45 Q240 55 234 143 Q222 205 160 214 Q98 205 86 143Z" fill="url(#g)" stroke="#a66b00" stroke-width="5"/>${eye(128,130)}${eye(192,130)}${blush}${face}${arms}${prop}<path d="M118 68 Q160 30 202 68" fill="none" stroke="#fff1a0" stroke-width="8" stroke-linecap="round" opacity=".7"/></svg>`;
+};
+const poses={idle:'idle',happy:'happy',wave:'wave',sleep:'sleep',panic:'panic',angry:'angry',work:'work',peek:'peek',tired:'tired'};
+function setNaiwa(pose,where='game'){const el=document.getElementById(where==='game'?'naiwa':where==='cover'?'coverNaiwa':'overNaiwa');el.innerHTML=SVG(poses[pose]||pose);}
+setNaiwa('happy','cover');setNaiwa('happy','over');
+const MISSIONS={
+ up:{icon:'🍼',text:'奶娃要上楼送奶啦！',hint:'马上按 ↑ 上楼',pose:'happy'},down:{icon:'🍮',text:'奶娃要下楼拿奶瓶！',hint:'马上按 ↓ 下楼',pose:'work'},left:{icon:'🚪',text:'还有人没进奶娃电梯！',hint:'快按 ← 开门',pose:'wave'},right:{icon:'🔔',text:'人齐啦！奶娃要关门！',hint:'快按 → 关门',pose:'happy'},cat:{icon:'🐱',text:'一只猫咪抢着坐奶娃电梯！',hint:'快开门 ←',pose:'peek'},rush:{icon:'🏃',text:'奶娃乘客冲过来了！',hint:'让他上楼 ↑',pose:'panic'},clean:{icon:'🧽',text:'奶娃电梯要擦一擦！',hint:'先开门 ←',pose:'work'},emergency:{icon:'🚨',text:'奶娃电梯警报响啦！',hint:'马上关门 →',pose:'panic'},baby:{icon:'🍼',text:'奶娃的小奶瓶掉啦！',hint:'开门 ← 帮忙',pose:'tired'},sleep:{icon:'😴',text:'奶娃差点睡着了……',hint:'赶紧按 ↑ 叫醒',pose:'sleep'},vip:{icon:'👑',text:'奶娃 VIP 来啦！',hint:'开门 ← 接驾',pose:'happy'},box:{icon:'📦',text:'超级大奶粉箱挡门！',hint:'开门 ←',pose:'work'},power:{icon:'💡',text:'奶娃电梯灯闪了一下！',hint:'关门 → 重启',pose:'panic'},party:{icon:'🎉',text:'奶娃突然要庆祝！',hint:'上楼 ↑',pose:'happy'},angry:{icon:'😤',text:'奶娃等太久生气啦！',hint:'赶快开门 ←',pose:'angry'}
+};
+const $=id=>document.getElementById(id);
+let running=false,score=0,combo=0,bestCombo=0,floor=1,current=null,timeoutId=null,duration=1350,roundEnds=0,best=Number(localStorage.getItem('naiwaElevatorBest')||0);
+$('best').textContent=best;
+
+// 奶娃音效引擎：纯浏览器 Web Audio，不需要下载任何音频文件
+let audioCtx=null, masterGain=null, soundOn=localStorage.getItem('naiwaSound')!=='off';
+function initAudio(){
+  if(!soundOn)return;
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  if(!audioCtx){
+    audioCtx=new AC();
+    masterGain=audioCtx.createGain();
+    masterGain.gain.value=.16;
+    masterGain.connect(audioCtx.destination);
+  }
+  if(audioCtx.state==='suspended')audioCtx.resume();
+}
+function tone(freq,dur=.09,type='sine',gain=.08,when=0,slide=0){
+  if(!soundOn)return;
+  initAudio(); if(!audioCtx)return;
+  const t=audioCtx.currentTime+when,o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type=type;o.frequency.setValueAtTime(freq,t);
+  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(35,freq+slide),t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);g.connect(masterGain);o.start(t);o.stop(t+dur+.02);
+}
+function noise(dur=.16,gain=.035,when=0){
+  if(!soundOn)return;initAudio();if(!audioCtx)return;
+  const len=Math.max(1,Math.floor(audioCtx.sampleRate*dur)),buf=audioCtx.createBuffer(1,len,audioCtx.sampleRate),data=buf.getChannelData(0);
+  for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*(1-i/len);
+  const src=audioCtx.createBufferSource(),f=audioCtx.createBiquadFilter(),g=audioCtx.createGain(),t=audioCtx.currentTime+when;
+  f.type='bandpass';f.frequency.value=900;f.Q.value=.7;g.gain.setValueAtTime(gain,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  src.buffer=buf;src.connect(f);f.connect(g);g.connect(masterGain);src.start(t);src.stop(t+dur+.02);
+}
+function sfx(name){
+  if(!soundOn)return;
+  initAudio();
+  switch(name){
+    case 'start': tone(523,.10,'sine',.08);tone(659,.12,'sine',.07,.08);tone(784,.18,'triangle',.065,.17);break;
+    case 'tap': tone(330,.045,'square',.035);break;
+    case 'up': tone(392,.08,'triangle',.06);tone(523,.11,'triangle',.06,.06);break;
+    case 'down': tone(392,.08,'triangle',.055);tone(294,.12,'triangle',.055,.06);break;
+    case 'open': noise(.22,.045);tone(523,.10,'sine',.045);tone(659,.13,'sine',.04,.08);break;
+    case 'close': noise(.18,.04);tone(659,.08,'sine',.045);tone(440,.13,'sine',.04,.06);break;
+    case 'perfect': tone(659,.08,'triangle',.07);tone(784,.09,'triangle',.07,.07);tone(988,.18,'sine',.075,.15);break;
+    case 'good': tone(523,.09,'triangle',.06);tone(659,.12,'triangle',.055,.07);break;
+    case 'wrong': tone(220,.16,'sawtooth',.045,0,-90);tone(155,.18,'sawtooth',.035,.08,-45);break;
+    case 'miss': tone(180,.22,'sine',.045,0,-100);break;
+    case 'tick': tone(880,.035,'square',.022);break;
+    case 'alarm': tone(740,.08,'square',.035);tone(520,.08,'square',.03,.09);tone(740,.08,'square',.035,.18);break;
+    case 'party': tone(523,.07,'triangle',.055);tone(659,.07,'triangle',.055,.07);tone(784,.09,'triangle',.06,.14);tone(1047,.16,'triangle',.06,.23);break;
+    case 'end': tone(659,.11,'triangle',.055);tone(523,.11,'triangle',.05,.10);tone(392,.20,'sine',.05,.20);break;
+    case 'floor': tone(784,.06,'sine',.045);tone(1047,.13,'sine',.05,.07);break;
+  }
+}
+function eventSfx(m){
+  if(m==='emergency'||m==='power')sfx('alarm');
+  else if(m==='party')sfx('party');
+  else if(m==='cat')tone(700,.09,'sine',.04);
+  else if(m==='rush')noise(.12,.03);
+  else if(m==='box')tone(180,.12,'triangle',.035);
+  else if(m==='sleep')tone(392,.18,'sine',.025,0,-110);
+}
+function setSoundUI(){
+  const b=$('soundToggle');b.textContent=soundOn?'🔊':'🔇';b.classList.toggle('off',!soundOn);b.title=soundOn?'关闭音效':'开启音效';
+}
+setSoundUI();
+$('soundToggle').onclick=()=>{soundOn=!soundOn;localStorage.setItem('naiwaSound',soundOn?'on':'off');setSoundUI();if(soundOn){initAudio();sfx('tap')}};
+
+function startGame(){
+  initAudio();sfx('start');
+  $('start').classList.add('hidden');$('over').classList.add('hidden');running=true;score=0;combo=0;bestCombo=0;floor=1;duration=1350;roundEnds=performance.now()+45000;
+  $('score').textContent=0;$('combo').textContent=0;$('floor').textContent='1F';$('direction').textContent='● 奶娃待机';nextMission();clock();
+}
+function clock(){if(!running)return;const remain=Math.max(0,roundEnds-performance.now());if(remain<=0){endGame();return}requestAnimationFrame(clock)}
+function nextMission(){
+  if(!running)return;clearTimeout(timeoutId);
+  let pool=['up','down','left','right'];
+  if(combo>=2)pool.push('cat','rush','baby');
+  if(combo>=5)pool.push('clean','sleep','vip','box');
+  if(combo>=8)pool.push('emergency','power','party','angry');
+  const m=pool[Math.floor(Math.random()*pool.length)];
+  current=m==='cat'||m==='baby'||m==='clean'||m==='vip'||m==='box'||m==='angry'?'left':m==='rush'||m==='sleep'||m==='party'?'up':m==='emergency'||m==='power'?'right':m;
+  const d=MISSIONS[m];$('eventIcon').textContent=d.icon;$('eventText').textContent=d.text;$('eventHint').textContent=d.hint;setNaiwa(d.pose);eventSfx(m);
+  $('timerBar').style.transition='none';$('timerBar').style.transform='scaleX(1)';
+  requestAnimationFrame(()=>{$('timerBar').style.transition=`transform ${duration}ms linear`;$('timerBar').style.transform='scaleX(0)'});
+  timeoutId=setTimeout(()=>answer(null),duration);
+}
+function answer(a){
+  if(!running)return;clearTimeout(timeoutId);sfx('tap');
+  const correct=a===current;
+  if(correct){
+    combo++;bestCombo=Math.max(bestCombo,combo);const points=100+Math.min(combo,30)*18;score+=points;
+    if(current==='up'){floor++;$('direction').textContent='↑ 奶娃上楼中';sfx('up');sfx('floor')}
+    if(current==='down'){floor=Math.max(1,floor-1);$('direction').textContent='↓ 奶娃下楼中';sfx('down')}
+    if(current==='left'){openDoors();$('direction').textContent='← 奶娃开门'}
+    if(current==='right'){closeDoors();$('direction').textContent='→ 奶娃关门'}
+    $('score').textContent=score;$('combo').textContent=combo;$('floor').textContent=floor+'F';
+    const perfect=combo%5===0;showFeedback(perfect?'✨ 奶娃 PERFECT!':'奶娃完成!',true);sfx(perfect?'perfect':'good');
+    $('character').className=combo>=10?'win':'bounce';burst(combo>=10?'🍼':'⭐');setTimeout(()=>{$('character').className=''},360);duration=Math.max(500,duration-18);
+  }else{
+    combo=0;$('combo').textContent=0;score=Math.max(0,score-60);$('score').textContent=score;showFeedback(a===null?'奶娃 MISS!':'奶娃搞错啦!',false);sfx(a===null?'miss':'wrong');
+    $('character').className='wobble';$('elevator').classList.add('shake');setTimeout(()=>{$('character').className='';$('elevator').classList.remove('shake')},300);duration=Math.min(1350,duration+40);
+  }
+  nextMission();
+}
+function showFeedback(t,good){$('feedback').textContent=t;$('feedback').className=(good?'good':'bad')+' show';setTimeout(()=>$('feedback').classList.remove('show'),260)}
+function openDoors(){sfx('open');$('elevator').classList.add('open');setTimeout(()=>$('elevator').classList.remove('open'),560)}
+function closeDoors(){sfx('close');$('elevator').classList.remove('open')}
+function burst(symbol){for(let i=0;i<8;i++){const p=document.createElement('div');p.className='particle';p.textContent=symbol;p.style.left=(45+Math.random()*10)+'%';p.style.top=(42+Math.random()*14)+'%';p.style.setProperty('--x',(Math.random()*200-100)+'px');p.style.setProperty('--y',(Math.random()*-150-20)+'px');$('app').appendChild(p);setTimeout(()=>p.remove(),720)}}
+function endGame(){if(!running)return;running=false;clearTimeout(timeoutId);sfx('end');best=Math.max(best,score);localStorage.setItem('naiwaElevatorBest',best);$('best').textContent=best;$('finalScore').textContent=score;$('finalCombo').textContent=bestCombo;$('overTitle').textContent=score>=5000?'奶娃王者！':score>=2500?'奶娃优秀下班！':'奶娃下班啦！';$('overMsg').textContent=score>=5000?'这栋楼已经被奶娃彻底接管！':score>=2500?'今天的奶娃值班表现很棒！':'辛苦啦，奶娃明天继续值班。';setNaiwa(score>=2500?'happy':'tired','over');$('over').classList.remove('hidden')}
+
+document.querySelectorAll('.ctrl').forEach(btn=>btn.addEventListener('pointerdown',()=>{btn.classList.add('active');setTimeout(()=>btn.classList.remove('active'),100);answer(btn.dataset.a)}));
+document.addEventListener('keydown',e=>{const map={ArrowLeft:'left',ArrowUp:'up',ArrowDown:'down',ArrowRight:'right'};if(map[e.key]){e.preventDefault();answer(map[e.key])}});
+$('startBtn').onclick=startGame;$('againBtn').onclick=startGame;
+</script>
+</body></html>
